@@ -1,8 +1,8 @@
 package com.ixorasoftware.runnerz.run;
 
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,14 +36,14 @@ public class RunController
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public void create(@RequestBody Run run)
+	public void create(@Valid @RequestBody Run run)
 	{
 		runRepository.create(run);
 	}
 
 	@PutMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void update(@RequestBody Run run, @PathVariable int id)
+	public void update(@Valid @RequestBody Run run, @PathVariable int id)
 	{
 		runRepository.update(run, id);
 	}
