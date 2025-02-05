@@ -9,14 +9,14 @@ public record Run (
 		int id,
 		@NotEmpty
 		String title,
-		LocalDateTime start,
-		LocalDateTime end,
+		LocalDateTime started,
+		LocalDateTime ended,
 		@Positive
 		int miles,
-		Location location)
+		String location)
 {
 	public Run{
-		if(!end.isAfter(start))
+		if(!ended.isAfter(started))
 			throw new IllegalArgumentException("Started time cannot be after end time");
 	}
 }

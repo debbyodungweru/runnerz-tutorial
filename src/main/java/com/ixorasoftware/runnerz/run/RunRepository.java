@@ -1,64 +1,57 @@
 package com.ixorasoftware.runnerz.run;
 
-import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 public class RunRepository
 {
-	private List<Run> runs;
+	private static final Logger log = LoggerFactory.getLogger(RunRepository.class);
+	private final JdbcClient jdbcClient;
+
+	public RunRepository(JdbcClient jdbcClient)
+	{
+		this.jdbcClient = jdbcClient;
+	}
 
 	public List<Run> findAll()
 	{
-		return runs;
+		return jdbcClient.sql("select * from run")
+				.query(Run.class)
+				.list();
 	}
 
-	public Optional<Run> findById(int id)
+	public Optional<Run> findById(Integer id)
 	{
-		return runs.stream()
-				.filter(run -> run.id() == id)
-				.findFirst();
+		return jdbcClient.sql("select * from run where id = :id")
+				.param("id", id)
+				.query(Run.class)
+				.optional();
 	}
 
-	@PostConstruct
-	private void init()
+	public int create(Run run)
 	{
-		runs = new ArrayList<>();
-
-		runs.add(new Run(1,
-				"Monday Morning Run",
-				LocalDateTime.now(),
-				LocalDateTime.now().plusMinutes(30),
-				3,
-				Location.INDOOR));
-
-		runs.add(new Run(2,
-				"Tuesday Evening Run",
-				LocalDateTime.now().plusDays(1),
-				LocalDateTime.now().plusDays(1).plusMinutes(45),
-				5,
-				Location.OUTDOOR));
+		return jdbcClient.sql("insert into run(id, title, started, ended, miles, location) values(?, ?, ?, ?, ?, ?)")
+				.params(List.of(run.id(), run.title(), run.started(), run.ended(), run.miles(),String.valueOf(run.location())))
+				.update();
 	}
 
-	public void create(Run run)
+	public int update(Run run, Integer id)
 	{
-		runs.add(run);
+		return jdbcClient.sql("update run set title = ?, started = ?, ended = ?, miles = ?, location = ? where id = ?")
+				.params(List.of(run.title(), run.started(), run.ended(), run.miles(), run.location(), id))
+				.update();
 	}
 
-	public void update(Run run, int id)
+	public int delete(Integer id)
 	{
-		Optional<Run> existingRun = findById(id);
-		existingRun.ifPresent(value -> runs.set(runs.indexOf(value), run));
-	}
-
-	public void delete(int id)
-	{
-		Optional<Run> existingRun = findById(id);
-		existingRun.ifPresent(value -> runs.remove(value));
+		return jdbcClient.sql("delete from run where id = ?")
+				.params( id)
+				.update();
 	}
 }
