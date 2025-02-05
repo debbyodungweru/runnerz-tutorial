@@ -44,7 +44,7 @@ public class RunRepository
 	public int update(Run run, Integer id)
 	{
 		return jdbcClient.sql("update run set title = ?, started = ?, ended = ?, miles = ?, location = ? where id = ?")
-				.params(List.of(run.title(), run.started(), run.ended(), run.miles(), run.location(), id))
+				.params(List.of(run.title(), run.started(), run.ended(), run.miles(), String.valueOf(run.location()), id))
 				.update();
 	}
 
