@@ -28,23 +28,23 @@ public class RunJdbcClientRepository
 
 	public Optional<Run> findById(Integer id)
 	{
-		return jdbcClient.sql("select * from run where id = :id")
-				.param("id", id)
+		return jdbcClient.sql("select * from run where id = ?")
+				.param(id)
 				.query(Run.class)
 				.optional();
 	}
 
 	public int create(Run run)
 	{
-		return jdbcClient.sql("insert into run(id, title, started, ended, miles, location, version) values(?, ?, ?, ?, ?, ?, 1)")
-				.params(List.of(run.id(), run.title(), run.started(), run.ended(), run.miles(),String.valueOf(run.location())))
+		return jdbcClient.sql("insert into run(id, title, started, ended, miles, location) values(?, ?, ?, ?, ?, ?)")
+				.params(List.of(run.getId(), run.getTitle(), run.getStarted(), run.getEnded(), run.getMiles(),String.valueOf(run.getLocation())))
 				.update();
 	}
 
 	public int update(Run run, Integer id)
 	{
 		return jdbcClient.sql("update run set title = ?, started = ?, ended = ?, miles = ?, location = ? where id = ?")
-				.params(List.of(run.title(), run.started(), run.ended(), run.miles(), String.valueOf(run.location()), id))
+				.params(List.of(run.getTitle(), run.getStarted(), run.getEnded(), run.getMiles(), String.valueOf(run.getLocation()), id))
 				.update();
 	}
 
