@@ -3,6 +3,7 @@ package com.ixorasoftware.runnerz.run;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Positive;
 
@@ -21,9 +22,16 @@ public class Run
 	@Positive
 	private int miles;
 	private Location location;
+	@Version
+	private int version;
 
 	public Run()
 	{
+	}
+
+	public Run(String title, LocalDateTime started, LocalDateTime ended, int miles, Location location)
+	{
+		this(0, title, started, ended, miles, location);
 	}
 
 	public Run(int id, String title, LocalDateTime started, LocalDateTime ended, int miles, Location location)
@@ -37,6 +45,7 @@ public class Run
 		this.ended = ended;
 		this.miles = miles;
 		this.location = location;
+		this.version = 1;
 	}
 
 	public int getId()
@@ -67,6 +76,11 @@ public class Run
 	public Location getLocation()
 	{
 		return location;
+	}
+
+	public int getVersion()
+	{
+		return version;
 	}
 }
 
