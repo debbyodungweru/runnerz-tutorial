@@ -23,7 +23,7 @@ public class Run
 	private int miles;
 	private Location location;
 	@Version
-	private int version;
+	private int version = 1;
 
 	public Run()
 	{
@@ -45,7 +45,6 @@ public class Run
 		this.ended = ended;
 		this.miles = miles;
 		this.location = location;
-		this.version = 1;
 	}
 
 	public int getId()
